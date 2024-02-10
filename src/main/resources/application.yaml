@@ -1,0 +1,10 @@
+server:
+  port: 8080
+spring:
+  datasource:
+    username: admin
+    password: 123
+    url: jdbc:postgresql://localhost:5432/course_test_db
+  jpa:
+    hibernate:
+      ddl-auto: update
