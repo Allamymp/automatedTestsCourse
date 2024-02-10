@@ -12,7 +12,9 @@ import study.automatedtestscourse.models.Planet;
 import study.automatedtestscourse.repository.PlanetRepository;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
+import static study.automatedtestscourse.common.PlanetConstants.INVALID_PLANET;
 import static study.automatedtestscourse.common.PlanetConstants.PLANET;
 
 // cria o contexto de teste e especifica o bean a ser adicionado
@@ -30,7 +32,7 @@ public class PlanetServiceTest {
 
     // padrao de nomenclatura : operacao_estado_retornoEsperado
     @Test
-    public void createPlanet_WithValidData_ReturnsPlanet(){
+    public void createPlanet_WithValidData_ReturnsPlanet() {
         // criacao de um stub para o mock do repositorio configurando um metodo
         // quando for chamado planetRepository.save(PLANET) ele retorna o PLANET
         //Arrange
@@ -43,5 +45,17 @@ public class PlanetServiceTest {
 
         //Assert
         assertThat(sut).isEqualTo(PLANET);
+    }
+
+    @Test
+    public void createPlanet_WhithNoValidData_ThrowsException() {
+        //Arrange
+        when(planetRepository.save(INVALID_PLANET)).thenThrow(RuntimeException.class);
+
+        assertThatThrownBy(
+                //Act
+                () -> planetService.create(INVALID_PLANET))
+                //Assert
+                .isInstanceOf(RuntimeException.class);
     }
 }
