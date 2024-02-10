@@ -4,8 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.UUID;
+import org.apache.commons.lang3.builder.EqualsBuilder;
 
 @Getter
 @NoArgsConstructor
@@ -21,4 +20,15 @@ public class Planet {
     private String climate;
     @Setter
     private String terrain;
+
+    public Planet(String name, String climate, String terrain) {
+        this.name = name;
+        this.climate = climate;
+        this.terrain = terrain;
+    }
+
+    @Override
+    public boolean equals(Object object){
+        return EqualsBuilder.reflectionEquals(object,this);
+    }
 }
