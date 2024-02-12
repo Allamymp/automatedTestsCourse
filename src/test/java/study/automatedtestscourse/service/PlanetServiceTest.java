@@ -58,7 +58,7 @@ public class PlanetServiceTest {
     }
 
     @Test
-    public void getById_withValidId_ReturnsPlanet() {
+    public void getById_withExistingId_ReturnsPlanet() {
         //comportamento mockado
         when(planetService.findById(1L)).thenReturn(Optional.of(PLANET));
 
@@ -71,7 +71,7 @@ public class PlanetServiceTest {
     }
 
     @Test
-    public void getById_withNotRegisteredId_ReturnsNull() {
+    public void getById_withNonexistentId_ReturnsNull() {
         //preparatorio
         when(planetService.findById(2L)).thenReturn(Optional.empty());
 
@@ -84,7 +84,7 @@ public class PlanetServiceTest {
     }
 
     @Test
-    public void getByName_withValidName_ReturnsPlanet() {
+    public void getByName_withExistingName_ReturnsPlanet() {
         //Arrange
         when(planetService.findByName("name")).thenReturn(Optional.of(PLANET));
 
@@ -97,19 +97,19 @@ public class PlanetServiceTest {
     }
 
     @Test
-    public void getByName_withNotRegisteredName_ReturnsNull() {
+    public void getByName_withNonexistentName_ReturnsNull() {
         //Arrange
-        when(planetService.findByName("invalidName")).thenReturn(Optional.empty());
+        when(planetService.findByName("nonexistent name")).thenReturn(Optional.empty());
 
         //Act
-        Optional<Planet> sut = planetService.findByName("invalidName");
+        Optional<Planet> sut = planetService.findByName("nonexistent name");
 
         //Assert
         assertThat(sut.isEmpty()).isTrue();
     }
 
     @Test
-    public void getByFilters_withValidFilters_ReturnsPlanet() {
+    public void getByFilters_withExistingFilters_ReturnsPlanet() {
         //Arrange
         when(planetService.findByFilters("climate", "terrain")).thenReturn(Optional.of(PLANET));
         //Act
@@ -120,12 +120,12 @@ public class PlanetServiceTest {
     }
 
     @Test
-    public void getByFilters_withNotRegisteredFilters_ReturnsNull() {
+    public void getByFilters_withNonexistentFilters_ReturnsNull() {
         //Arrange
-        when(planetService.findByFilters("not registered climate", "not registered terrain"))
+        when(planetService.findByFilters("nonexistent climate", "nonexistent terrain"))
                 .thenReturn(Optional.empty());
         //Act
-        Optional<Planet> sut = planetService.findByFilters("not registered climate", "not registered terrain");
+        Optional<Planet> sut = planetService.findByFilters("nonexistent climate", "nonexistent terrain");
         //Assert
         assertThat(sut.isEmpty()).isTrue();
     }
