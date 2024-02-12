@@ -70,7 +70,7 @@ public class PlanetServiceTest {
         assertThat(sut.get()).isEqualTo(PLANET);
     }
     @Test
-    public  void  getById_withInvalidInput_ReturnsNull(){
+    public  void  getById_withNotRegisteredId_ReturnsNull(){
         //preparatorio
         when(planetService.findById(2L)).thenReturn(Optional.empty());
 
@@ -96,7 +96,7 @@ public class PlanetServiceTest {
     }
 
     @Test
-    public void getByName_withInvalidData_ReturnsNull(){
+    public void getByName_withNotRegisteredData_ReturnsNull(){
         //Arrange
         when(planetService.findByName("invalidName")).thenReturn(Optional.empty());
 
