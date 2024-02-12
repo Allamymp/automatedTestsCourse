@@ -6,10 +6,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import study.automatedtestscourse.models.Planet;
 import study.automatedtestscourse.repository.PlanetRepository;
+
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -24,11 +24,9 @@ import static study.automatedtestscourse.common.PlanetConstants.PLANET;
 public class PlanetServiceTest {
     @InjectMocks
     private PlanetService planetService;
-
     //@MockBean
     @Mock
     private PlanetRepository planetRepository;
-
 
     // padrao de nomenclatura : operacao_estado_retornoEsperado
     @Test
@@ -57,5 +55,30 @@ public class PlanetServiceTest {
                 () -> planetService.create(INVALID_PLANET))
                 //Assert
                 .isInstanceOf(RuntimeException.class);
+    }
+
+    @Test
+    public void getById_withValidInput_ReturnsPlanet() {
+        //comportamento mockado
+        when(planetService.findById(1L)).thenReturn(Optional.of(PLANET));
+
+        //método a ser testado
+        Optional<Planet> sut = planetService.findById(1L);
+
+        // resultados esperados
+        assertThat(sut.isPresent()).isTrue();
+        assertThat(sut.get()).isEqualTo(PLANET);
+    }
+    @Test
+    public  void  getById_withInvalidInput_ReturnsNull(){
+        //preparatorio
+        when(planetService.findById(2L)).thenReturn(Optional.empty());
+
+        //metodo a ser testado
+        Optional<Planet> sut = planetService.findById(2L);
+
+        //resultado esperados
+        assertThat(sut.isPresent()).isFalse();
+
     }
 }
