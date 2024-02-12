@@ -81,4 +81,29 @@ public class PlanetServiceTest {
         assertThat(sut.isPresent()).isFalse();
 
     }
+
+    @Test
+    public void getByName_withValidData_ReturnsPlanet(){
+        //Arrange
+        when(planetService.findByName("name")).thenReturn(Optional.of(PLANET));
+
+        //Act
+        Optional<Planet> sut = planetService.findByName("name");
+
+        //Assert
+        assertThat(sut.isPresent()).isTrue();
+        assertThat(sut.get()).isEqualTo(PLANET);
+    }
+
+    @Test
+    public void getByName_withInvalidData_ReturnsNull(){
+        //Arrange
+        when(planetService.findByName("invalidName")).thenReturn(Optional.empty());
+
+        //Act
+        Optional<Planet> sut = planetService.findByName("invalidName");
+
+        //Assert
+        assertThat(sut.isEmpty()).isTrue();
+    }
 }
