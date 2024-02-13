@@ -11,9 +11,8 @@ import study.automatedtestscourse.repository.PlanetRepository;
 
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.when;
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.*;
 import static study.automatedtestscourse.common.PlanetConstants.INVALID_PLANET;
 import static study.automatedtestscourse.common.PlanetConstants.PLANET;
 
@@ -128,5 +127,16 @@ public class PlanetServiceTest {
         Optional<Planet> sut = planetService.findByFilters("nonexistent climate", "nonexistent terrain");
         //Assert
         assertThat(sut.isEmpty()).isTrue();
+    }
+
+    @Test
+    public void removePlanet_WithExistingId_DoesNotThrowAnyException() {
+        assertThatCode(() -> planetService.deleteById(1L)).doesNotThrowAnyException();
+    }
+
+    @Test
+    public void removePlanet_WithUnexistingId_ThrowsException() {
+        doThrow(new RuntimeException()).when(planetService).deleteById(99L);
+        assertThatThrownBy(()->planetService.deleteById(99L)).isInstanceOf(RuntimeException.class);
     }
 }

@@ -32,4 +32,8 @@ public class PlanetService {
     public Optional<Planet> findByFilters(String climate, String terrain) {
         return planetRepository.findByClimateAndTerrain(climate,terrain);
     }
+
+    public void deleteById(Long id) {
+        planetRepository.deleteById(id);
+    }
 }

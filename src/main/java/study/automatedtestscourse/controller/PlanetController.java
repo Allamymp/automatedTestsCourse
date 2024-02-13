@@ -34,10 +34,17 @@ public class PlanetController {
         return planetOptional.map(planet -> ResponseEntity.status(HttpStatus.OK).body(planet))
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
+
     @GetMapping
-    public ResponseEntity<Planet> getByFilters(@RequestParam String climate, String terrain){
-        Optional<Planet> planetOptional = planetService.findByFilters(climate,terrain);
+    public ResponseEntity<Planet> getByFilters(@RequestParam String climate, String terrain) {
+        Optional<Planet> planetOptional = planetService.findByFilters(climate, terrain);
         return planetOptional.map(planet -> ResponseEntity.status(HttpStatus.OK).body(planet))
-                .orElseGet(()->ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deletePlanet(@PathVariable Long id) {
+        planetService.deleteById(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
