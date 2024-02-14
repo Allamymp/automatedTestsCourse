@@ -1,17 +1,14 @@
-package study.automatedtestscourse.controller;
+package study.automatedtestscourse.repository;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import study.automatedtestscourse.models.Planet;
-import study.automatedtestscourse.repository.PlanetRepository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static study.automatedtestscourse.common.PlanetConstants.PLANET;
-import static study.automatedtestscourse.common.PlanetConstants.INVALID_PLANET;
-import static study.automatedtestscourse.common.PlanetConstants.EMPTY_PLANET;
+import static study.automatedtestscourse.common.PlanetConstants.*;
 
 
 //@DataJpaTest configura automaticamente um banco em memória
@@ -38,12 +35,22 @@ public class PlanetRepositoryTest {
     @Test
     public void createPlanet_WithInvalidData_ThrowsException() {
         //Arrange
-        Planet emptyPlanet = EMPTY_PLANET;
-        Planet invalidPlanet = INVALID_PLANET;
         //Act
         //Assert
-        assertThatThrownBy(() -> planetRepository.save(emptyPlanet)).isInstanceOf(RuntimeException.class);
-        assertThatThrownBy(() -> planetRepository.save(invalidPlanet)).isInstanceOf(RuntimeException.class);
+        assertThatThrownBy(() -> planetRepository.save(EMPTY_PLANET)).isInstanceOf(RuntimeException.class);
+        assertThatThrownBy(() -> planetRepository.save(INVALID_PLANET)).isInstanceOf(RuntimeException.class);
 
+    }
+
+    @Test
+    public void createPlanet_WithExistingName_ThrowsException(){
+        //Arrange
+        // o entitymanager fica monitorando o objeto criado, se tentar salvar no banco assim ele sabe que o objeto já
+        // foi criado e apenas atualiza ao invés de tentar salvar uma nova instancia, necessário usar o método detach
+        Planet duplicatedPlanet = testEntityManager.persistFlushFind(PLANET);
+        testEntityManager.detach(duplicatedPlanet);
+        duplicatedPlanet.setPlanetId(null);
+        //Assert
+        assertThatThrownBy(()->planetRepository.save(duplicatedPlanet)).isInstanceOf(RuntimeException.class);
     }
 }
