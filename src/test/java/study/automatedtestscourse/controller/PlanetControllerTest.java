@@ -35,7 +35,8 @@ public class PlanetControllerTest {
         when(planetService.create(PLANET)).thenReturn(PLANET);
 
         //passar PLANET diretamente não é possivel pq não há a serialização do objeto para ser enviado na requisição
-        mockMvc.perform(post("/planets").content(objectMapper.writeValueAsString(PLANET))
+        mockMvc
+                .perform(post("/planets").content(objectMapper.writeValueAsString(PLANET))
                         .contentType(MediaType.APPLICATION_JSON))
                 //verifica o status do retorno
                 .andExpect(status().isCreated())
