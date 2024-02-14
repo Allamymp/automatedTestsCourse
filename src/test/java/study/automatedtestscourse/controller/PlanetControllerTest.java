@@ -1,5 +1,6 @@
 package study.automatedtestscourse.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static study.automatedtestscourse.common.PlanetConstants.PLANET;
+import static study.automatedtestscourse.common.PlanetConstants.*;
 
 //habilita testes via http request
 // especificado apenas o PlanetController no teste
@@ -38,5 +39,23 @@ public class PlanetControllerTest {
                 //verifica o status do retorno
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$").value(PLANET));
+    }
+
+    @Test
+    public void createPlanet_WithInvalidData_ReturnsBadRequest() throws Exception {
+        mockMvc
+                .perform(
+                        post("/planets").content(objectMapper.writeValueAsString(INVALID_PLANET))
+                                .contentType(MediaType.APPLICATION_JSON))
+                //verifica o status do retorno
+                .andExpect(status().isUnprocessableEntity());
+
+        mockMvc
+                .perform(
+                        post("/planets").content(objectMapper.writeValueAsString(EMPTY_PLANET))
+                                .contentType(MediaType.APPLICATION_JSON))
+                //verifica o status do retorno
+                .andExpect(status().isUnprocessableEntity());
+
     }
 }
