@@ -8,20 +8,19 @@ import lombok.Setter;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 
 @Getter
+@Setter
 @NoArgsConstructor
 @Entity
-@Table(name="TB_PLANET", uniqueConstraints = @UniqueConstraint(columnNames = "name"))
+@Table(name="TB_PLANET")
 public class Planet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long planetId;
-    @Setter
     @NotBlank
+    @Column(unique = true)
     private String name;
-    @Setter
     @NotBlank
     private String climate;
-    @Setter
     @NotBlank
     private String terrain;
 
