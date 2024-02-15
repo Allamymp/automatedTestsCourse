@@ -93,4 +93,23 @@ public class PlanetControllerTest {
                 .andExpect(status().isNotFound());
 
     }
+    @Test
+    public  void getPlanet_ByExistingName_ReturnsPlanet()throws Exception{
+        when(planetService.findByName("name")).thenReturn(Optional.of(PLANET));
+
+        mockMvc
+                .perform(
+                        //dispara a requisição get
+                        get("/planets/name/{name}",PLANET.getName()))
+                //verifica se o status da resposta foi 200ok
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").value(PLANET));
+    }
+    @Test
+    public void getPlanet_ByUnexistingName_ReturnsNotFound() throws Exception{
+        mockMvc
+                .perform(
+                        get("/name/planetName"))
+                .andExpect(status().isNotFound());
+    }
 }
