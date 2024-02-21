@@ -9,6 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import study.automatedtestscourse.models.Planet;
 import study.automatedtestscourse.repository.PlanetRepository;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -122,7 +123,7 @@ public class PlanetServiceTest {
     public void getByFilters_withNonexistentFilters_ReturnsNull() {
         //Arrange
         when(planetService.findByFilters("nonexistent climate", "nonexistent terrain"))
-                .thenReturn(NULL_PLANETS);
+                .thenReturn(Collections.emptyList());
         //Act
         List<Planet> sut = planetService.findByFilters("nonexistent climate", "nonexistent terrain");
         //Assert

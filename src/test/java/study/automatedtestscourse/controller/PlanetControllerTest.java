@@ -10,8 +10,11 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import study.automatedtestscourse.service.PlanetService;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -76,7 +79,7 @@ public class PlanetControllerTest {
     }
 
     @Test
-    public void getPlanet_ByExistingId_ReturnsPlanet() throws Exception{
+    public void getPlanet_ByExistingId_ReturnsPlanet() throws Exception {
         when(planetService.findById(1L)).thenReturn(Optional.of(PLANET));
 
         mockMvc
@@ -85,28 +88,31 @@ public class PlanetControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").value(PLANET));
     }
+
     @Test
-    public void getPlanet_ByUnexistingId_ReturnsNotFound() throws Exception{
+    public void getPlanet_ByUnexistingId_ReturnsNotFound() throws Exception {
         mockMvc
                 .perform(
                         get("/planets/1"))
                 .andExpect(status().isNotFound());
 
     }
+
     @Test
-    public  void getPlanet_ByExistingName_ReturnsPlanet()throws Exception{
+    public void getPlanet_ByExistingName_ReturnsPlanet() throws Exception {
         when(planetService.findByName("name")).thenReturn(Optional.of(PLANET));
 
         mockMvc
                 .perform(
                         //dispara a requisição get
-                        get("/planets/name/{name}",PLANET.getName()))
+                        get("/planets/name/{name}", PLANET.getName()))
                 //verifica se o status da resposta foi 200ok
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").value(PLANET));
     }
+
     @Test
-    public void getPlanet_ByUnexistingName_ReturnsNotFound() throws Exception{
+    public void getPlanet_ByUnexistingName_ReturnsNotFound() throws Exception {
         mockMvc
                 .perform(
                         get("/name/planetName"))
@@ -114,10 +120,39 @@ public class PlanetControllerTest {
     }
 
     @Test
-    public void listPlanets_ReturnsFilteredPlanets() throws Exception{
+    public void listPlanets_ReturnsFilteredPlanets() throws Exception {
 
-    }  @Test
-    public void listPlanets_ReturnsNoPlanets() throws Exception{
+        when(planetService.findByFilters(TATOOINE.getClimate(), TATOOINE.getTerrain())).thenReturn(List.of(TATOOINE));
+
+        mockMvc
+                .perform(
+                        get("/planets")
+                )
+                .andExpect(status().isBadRequest());
+        mockMvc
+                .perform(
+                        get("/planets?" + String
+                                .format("climate=%s&terrain=%s", TATOOINE.getClimate(), TATOOINE.getTerrain()))
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("[0]").value(TATOOINE));
+    }
+
+    @Test
+    public void listPlanets_ReturnsNoPlanets() throws Exception {
+        when(planetService.findByFilters(null, null)).thenReturn(Collections.emptyList());
+        when(planetService.findByFilters("unexisting climate", "unexisting terrain"))
+                .thenReturn(Collections.emptyList());
+
+        mockMvc
+                .perform(get("/planets"))
+                .andExpect(status().isBadRequest());
+
+        mockMvc.perform(get("/planets?" + "climate=unexisting climate&" +
+                        "terrain=unexisting terrain"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(0)));
 
     }
 }

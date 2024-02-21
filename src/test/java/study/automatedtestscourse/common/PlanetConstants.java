@@ -21,5 +21,4 @@ public class PlanetConstants {
             add(ALDERAAN);
         }
     };
-    public static final List<Planet> NULL_PLANETS = new ArrayList<>();
 }

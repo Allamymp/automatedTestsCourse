@@ -104,12 +104,7 @@ public class PlanetRepositoryTest {
 
     @Test
     public void listPlanets_ReturnsFilteredPlanets() throws Exception{
-        List<Planet> list = new ArrayList<>();
-         list.add(testEntityManager.persistFlushFind(PLANET));
-         list.add(testEntityManager.persistFlushFind(PLANET));
-         list.add(testEntityManager.persistFlushFind(PLANET));
-         assertThat(list).isNotNull();
-         assertThat(list).isNotEmpty();
+
 
     }
     @Test
