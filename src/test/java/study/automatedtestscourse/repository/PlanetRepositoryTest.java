@@ -8,6 +8,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import study.automatedtestscourse.models.Planet;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -15,6 +17,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.notNull;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static study.automatedtestscourse.common.PlanetConstants.*;
 
 
@@ -27,9 +32,10 @@ public class PlanetRepositoryTest {
     private TestEntityManager testEntityManager;
 
     @AfterEach
-    public  void afterEach(){
+    public void afterEach() {
         PLANET.setPlanetId(null);
     }
+
     @Test
     public void createPlanet_WithValidData_ReturnsPlanet() {
         //Arrange
@@ -54,7 +60,7 @@ public class PlanetRepositoryTest {
     }
 
     @Test
-    public void createPlanet_WithExistingName_ThrowsException(){
+    public void createPlanet_WithExistingName_ThrowsException() {
         //Arrange
         // o entitymanager fica monitorando o objeto criado, se tentar salvar no banco assim ele sabe que o objeto já
         // foi criado e apenas atualiza ao invés de tentar salvar uma nova instancia, necessário usar o método detach
@@ -62,11 +68,11 @@ public class PlanetRepositoryTest {
         testEntityManager.detach(duplicatedPlanet);
         duplicatedPlanet.setPlanetId(null);
         //Assert
-        assertThatThrownBy(()->planetRepository.save(duplicatedPlanet)).isInstanceOf(RuntimeException.class);
+        assertThatThrownBy(() -> planetRepository.save(duplicatedPlanet)).isInstanceOf(RuntimeException.class);
     }
 
     @Test
-    public void getPlanet_ByExistingId_ReturnsPlanet(){
+    public void getPlanet_ByExistingId_ReturnsPlanet() {
 
         Planet planet = testEntityManager.persistFlushFind(PLANET);
         Optional<Planet> optionalPlanet = planetRepository.findById(planet.getPlanetId());
@@ -78,8 +84,37 @@ public class PlanetRepositoryTest {
 
     @Test
     public void getPlanet_ByUnexistingId_ReturnsEmpty() {
-         Optional<Planet> planetOptional = planetRepository.findById(1L);
-         assertThat(planetOptional).isEmpty();
+        Optional<Planet> planetOptional = planetRepository.findById(1L);
+        assertThat(planetOptional).isEmpty();
 
     }
+
+    @Test
+    public void getPlanet_ByExistingName_ReturnsPlanet() throws Exception {
+        Planet planet = testEntityManager.persistFlushFind(PLANET);
+        Optional<Planet> planetOptional = planetRepository.findByName(planet.getName());
+        assertThat(planetOptional).isNotEmpty();
+    }
+
+    @Test
+    public void getPlanet_ByUnexistingName_ReturnsNotFound() throws Exception {
+        Optional<Planet> planetOptional = planetRepository.findByName(PLANET.getName());
+        assertThat(planetOptional).isEmpty();
+    }
+
+    @Test
+    public void listPlanets_ReturnsFilteredPlanets() throws Exception{
+        List<Planet> list = new ArrayList<>();
+         list.add(testEntityManager.persistFlushFind(PLANET));
+         list.add(testEntityManager.persistFlushFind(PLANET));
+         list.add(testEntityManager.persistFlushFind(PLANET));
+         assertThat(list).isNotNull();
+         assertThat(list).isNotEmpty();
+
+    }
+    @Test
+    public void listPlanets_ReturnsNoPlanets() throws Exception{
+
+    }
+
 }

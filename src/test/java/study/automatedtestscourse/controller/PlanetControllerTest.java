@@ -112,4 +112,12 @@ public class PlanetControllerTest {
                         get("/name/planetName"))
                 .andExpect(status().isNotFound());
     }
+
+    @Test
+    public void listPlanets_ReturnsFilteredPlanets() throws Exception{
+
+    }  @Test
+    public void listPlanets_ReturnsNoPlanets() throws Exception{
+
+    }
 }
