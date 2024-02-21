@@ -9,12 +9,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import study.automatedtestscourse.models.Planet;
 import study.automatedtestscourse.repository.PlanetRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
-import static study.automatedtestscourse.common.PlanetConstants.INVALID_PLANET;
-import static study.automatedtestscourse.common.PlanetConstants.PLANET;
+import static study.automatedtestscourse.common.PlanetConstants.*;
 
 // cria o contexto de teste e especifica o bean a ser adicionado
 // em testes de unidade nao e necessario(geralmente) usar o springboot, usa-se so o mockito
@@ -110,21 +110,21 @@ public class PlanetServiceTest {
     @Test
     public void getByFilters_withExistingFilters_ReturnsPlanet() {
         //Arrange
-        when(planetService.findByFilters("climate", "terrain")).thenReturn(Optional.of(PLANET));
+        when(planetService.findByFilters("Wet", "Swamp")).thenReturn(PLANETS);
         //Act
-        Optional<Planet> sut = planetService.findByFilters("climate", "terrain");
+        List<Planet> sut = planetService.findByFilters("Wet", "Swamp");
         //Assert
-        assertThat(sut.isPresent()).isTrue();
-        assertThat(sut.get()).isEqualTo(PLANET);
+        assertThat(sut.isEmpty()).isFalse();
+        assertThat(sut.getFirst()).isEqualTo(DAGOBAH);
     }
 
     @Test
     public void getByFilters_withNonexistentFilters_ReturnsNull() {
         //Arrange
         when(planetService.findByFilters("nonexistent climate", "nonexistent terrain"))
-                .thenReturn(Optional.empty());
+                .thenReturn(NULL_PLANETS);
         //Act
-        Optional<Planet> sut = planetService.findByFilters("nonexistent climate", "nonexistent terrain");
+        List<Planet> sut = planetService.findByFilters("nonexistent climate", "nonexistent terrain");
         //Assert
         assertThat(sut.isEmpty()).isTrue();
     }

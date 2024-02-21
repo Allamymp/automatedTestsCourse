@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import study.automatedtestscourse.models.Planet;
 import study.automatedtestscourse.service.PlanetService;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -37,10 +38,10 @@ public class PlanetController {
     }
 
     @GetMapping
-    public ResponseEntity<Planet> getByFilters(@RequestParam String climate, String terrain) {
-        Optional<Planet> planetOptional = planetService.findByFilters(climate, terrain);
-        return planetOptional.map(planet -> ResponseEntity.status(HttpStatus.OK).body(planet))
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    public ResponseEntity<List<Planet>> getByFilters(@RequestParam String climate, String terrain) {
+        List<Planet> list= planetService.findByFilters(climate, terrain);
+           return ResponseEntity.status(HttpStatus.OK).body(list);
+
     }
 
     @DeleteMapping("/{id}")

@@ -1,10 +1,10 @@
 package study.automatedtestscourse.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import study.automatedtestscourse.models.Planet;
 import study.automatedtestscourse.repository.PlanetRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -29,8 +29,8 @@ public class PlanetService {
         return planetRepository.findByName(name);
     }
 
-    public Optional<Planet> findByFilters(String climate, String terrain) {
-        return planetRepository.findByClimateAndTerrain(climate,terrain);
+    public List<Planet> findByFilters(String climate, String terrain) {
+        return planetRepository.findAllByClimateAndTerrain(climate,terrain);
     }
 
     public void deleteById(Long id) {
